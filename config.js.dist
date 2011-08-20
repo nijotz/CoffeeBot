@@ -1,17 +1,36 @@
 config = {
+
+  freenode: {
+    host: 'irc.freenode.net',
+    port: 6667,
+
     user: {
-	nick: '',
-	user: '',
-	real: 'ZenIRCBot',
-	pass: ''
+      nick: 'ima_luser',
+      user: 'ima_luser',
+      real: 'ima_luser',
+      pass: ''
     },
-    server: {
-	addr: 'irc.freenode.net',
-	port: 6667
-    },
+
     chans: {
-	channelname: 'password' // set password to '' if there is no password
+        bottest1234: '', // set password to '' if there is no password
     }
+  },
+
+  efnet: {
+    host: 'irc.efnet.org',
+    port: 6667,
+
+    user: {
+      nick: 'ima_luser',
+      user: 'ima_luser',
+      real: 'ima_luser',
+      pass: ''
+    },
+
+    chans: {
+        bottest1234: '', // set password to '' if there is no password
+    }
+  },
 };
 
 module.exports = config;
