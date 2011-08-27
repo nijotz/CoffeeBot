@@ -1,6 +1,5 @@
 net = require 'net'
 tls = require 'tls'
-debug = false
 
 
 class Connection
