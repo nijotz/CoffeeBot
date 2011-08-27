@@ -8,7 +8,8 @@ class Bot
     for server of config
       host = config[server].host
       port = config[server].port
-      @add_connection server, host, port
+      tls = config[server].tls
+      @add_connection server, host, port, tls
       @connections[server].connect()
 
   add_connection: (name, host, port) =>
