@@ -37,7 +37,7 @@ class Connection
 
   handle_event: (event, args) ->
     for listener of @listeners[event]
-      @listeners[event][listener].callback args[0]
+      @listeners[event][listener].callback.apply(this, args)
 
   add_listener: (listener) ->
     console.log "Adding ConnectionListener: #{ listener.event }"
