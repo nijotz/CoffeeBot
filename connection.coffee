@@ -45,6 +45,13 @@ class Connection
       @listeners[listener.event] = []
     @listeners[listener.event].push listener
 
+  write: (msg) ->
+    if debug then console.log "Writing"
+    if @stream.writable
+      @stream.write msg + '\n', () =>
+    else
+      @add_listener new ConnectionListener 'drain', () =>
+        @write msg
 
 class Listener
 

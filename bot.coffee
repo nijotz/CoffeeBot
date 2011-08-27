@@ -25,16 +25,16 @@ class Bot
     callback = () =>
       console.log "Setting username on #{ server }"
       nick = config[server].user.nick
-      @connections[server].stream_write 'NICK ' + nick
+      @connections[server].write 'NICK ' + nick
 
       user = config[server].user.user
       real = config[server].user.real
-      @connections[server].stream_write 'USER ' + user + ' 8 * :' + real
+      @connections[server].write 'USER ' + user + ' 8 * :' + real
     setTimeout callback, 2000
 
     callback = () =>
       for chan, pass of config[server].chans
-        @connections[server].stream_write 'JOIN #' + chan + ' ' + pass
+        @connections[server].write 'JOIN #' + chan + ' ' + pass
     setTimeout callback, 5000
 
 
