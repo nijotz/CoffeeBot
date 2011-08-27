@@ -37,13 +37,7 @@ class Connection
     return () => @handle_event(event, arguments)
 
   handle_event: (event, args) ->
-    if debug
-      console.log "Handling event #{ event }"
-      console.log "Arguments: #{ args[0] }"
-
     for listener of @listeners[event]
-      if debug
-        console.log @listeners[event][listener].callback
       @listeners[event][listener].callback args[0]
 
   add_listener: (listener) ->
