@@ -1,5 +1,6 @@
 net = require 'net'
 connection = require './connection'
+debug = true
 
 
 class IRCConnection extends connection.Connection
@@ -9,45 +10,58 @@ class IRCConnection extends connection.Connection
 
     # On connect, add a ping response listener
     @add_listener new connection.ConnectionListener 'connect', () =>
-      @add_listener new IRCListener /^PING :(.+)$/i, (match) =>
-        @stream_write 'PONG :' + match[1]
+      @add_listener new IRCConnectionListener /^PING :(.+)$/i, (match) =>
+        @write 'PONG :' + match[1]
     
-    # Parse network data events for the IRCListeners
-    @add_listener new connection.ConnectionListener 'data', (data) =>
-        msgs = data.split '\n'
-        for msg in msgs
-          msg = msg.slice(0,-1) # gets rid of some weird CR character
-          console.log "#{ @host }:#{ @port } - RECV -", msg
-          if msg then @handle_irc_event msg
+    # Parse network data events for the IRCConnectionListener
+    @read (data) =>
+      msgs = data.split '\n'
+      for msg in msgs
+        msg = msg.slice(0,-1) # gets rid of some weird CR character
+        console.log "#{ @host }:#{ @port } - RECV -", msg
+        if msg then @handle_event(new IRCConnectionEvent msg)
 
-  handle_irc_event: (msg) =>
-    for listener in @irc_listeners
-      match = listener.regex.exec msg
+  handle_event: (event) =>
+    if debug then console.log "#{ event instanceof IRCConnectionEvent }"
+
+    if not (event instanceof IRCConnectionEvent)
+      super event
+
+    for i in [0...@irc_listeners.length]
+      listener = @irc_listeners[i]
+      match = listener.regex.exec event.msg
       if match
         listener.callback match
+      if listener.once
+        @irc_listeners.slice i,1
 
   add_listener: (listener) ->
-    console.log "Adding listener: #{ listener }"
     if listener instanceof connection.ConnectionListener
       super listener
-    if listener instanceof IRCListener
-      console.log "Adding IRCListener"
+    if listener instanceof IRCConnectionListener
       @irc_listeners.push listener
 
   connect: ->
     console.log "Connecting to #{ @host }:#{ @port }..."
     super
 
-  stream_write: (msg) ->
-    @stream.write msg + '\n', () =>
-      console.log "#{ @host }:#{ @port } - SENT -", msg
+  read: (callback) ->
+    @add_listener new connection.ConnectionListener 'data', callback
+
+  write: (msg) ->
+    console.log "#{ @host }:#{ @port } - SENT -", msg
+    super msg
 
 
-class IRCListener extends connection.Listener
-  constructor: (@regex, @callback) ->
+class IRCConnectionListener extends connection.ConnectionListener
+  constructor: (@regex, @callback, once = false) ->
+
+
+class IRCConnectionEvent extends connection.ConnectionEvent
+  constructor: (@msg) ->
 
 
 exports.IRCConnection = IRCConnection
-exports.Listener = connection.Listener
+exports.IRCConnectionEvent = IRCConnectionEvent
+exports.IRCConnectionListener = IRCConnectionListener
 exports.ConnectionListener = connection.ConnectionListener
-exports.IRCListener = IRCListener
