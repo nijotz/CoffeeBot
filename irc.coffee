@@ -15,9 +15,8 @@ class IRCConnection extends connection.Connection
     
     # Parse network data events for the IRCConnectionListener
     @read (data) =>
-      msgs = data.split '\n'
+      msgs = data.split '\r\n'
       for msg in msgs
-        msg = msg.slice(0,-1) # gets rid of some weird CR character
         console.log "#{ @host }:#{ @port } - RECV -", msg
         if msg then @handle_event(new IRCConnectionEvent msg)
 
