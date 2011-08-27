@@ -18,7 +18,7 @@ class IRCConnection extends connection.Connection
       msgs = data.split '\r\n'
       for msg in msgs
         console.log "#{ @host }:#{ @port } - RECV -", msg
-        if msg then @handle_event(new IRCConnectionEvent msg)
+        if msg then @handle_event new IRCConnectionEvent msg
 
   handle_event: (event) =>
     if debug then console.log "#{ event instanceof IRCConnectionEvent }"
