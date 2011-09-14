@@ -59,6 +59,7 @@ class Connection
     if @stream.writable
       @stream.write msg + '\n', () =>
     else
+      # TODO: add a once flag so listeners removed from the listener list
       @add_listener new ConnectionListener 'drain', () =>
         @write msg
 
