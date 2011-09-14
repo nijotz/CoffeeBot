@@ -1,7 +1,5 @@
 net = require 'net'
 connection = require './connection'
-debug = true
-
 
 class IRCConnection extends connection.Connection
   constructor: (@host, @port, @tls = false) ->
@@ -21,7 +19,7 @@ class IRCConnection extends connection.Connection
         if msg then @handle_event new IRCConnectionEvent msg
 
   handle_event: (event) =>
-    if debug then console.log "#{ event instanceof IRCConnectionEvent }"
+    if debug? then console.log "#{ event instanceof IRCConnectionEvent }"
 
     if not (event instanceof IRCConnectionEvent)
       super event
