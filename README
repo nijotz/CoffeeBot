@@ -1,0 +1,3 @@
+sudo npm -g install coffee-script
+cp config.js.dist config.js
+coffee bot.coffee
